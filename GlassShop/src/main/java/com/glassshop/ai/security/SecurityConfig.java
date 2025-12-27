@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,38 +24,56 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig {
 
     @Autowired
-    private JwtFilter jwtFilter;   // ✅ MUST be injected
+    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors()
-            .and()
+            .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
+
+            // ✅ JWT = STATELESS
+            .sessionManagement(
+                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
             .authorizeHttpRequests(auth -> auth
 
-            	    .requestMatchers("/auth/login", "/auth/register-shop")
-            	    .permitAll()
+                // ✅ PUBLIC (NO TOKEN)
+                .requestMatchers(
+                    "/auth/login",
+                    "/auth/register-shop"
+                ).permitAll()
 
-            	    .requestMatchers(
-            	        "/auth/create-staff",
-            	        "/audit/**",
-            	        "/ai/**"
-            	    ).hasAuthority("ROLE_ADMIN")
+                // ✅ PROFILE (ANY LOGGED IN USER)
+                .requestMatchers("/auth/profile")
+                .authenticated()
 
-            	    .requestMatchers("/stock/**")
-            	    .hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF")
+                // ✅ ADMIN ONLY
+                .requestMatchers(
+                    "/auth/create-staff",
+                    "/auth/staff/**",
+                    "/audit/**",
+                    "/ai/**"
+                ).hasRole("ADMIN")
 
-            	    .anyRequest().authenticated()
-            	)
+                // ✅ ADMIN + STAFF
+                .requestMatchers(
+                    "/stock/recent",
+                    "/stock/**"
+                ).hasAnyRole("ADMIN", "STAFF")
 
+                // ❌ EVERYTHING ELSE BLOCKED
+                .anyRequest().authenticated()
+            )
 
+            // ✅ JWT FILTER
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -68,8 +87,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -33,6 +33,12 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
 	List<Stock> findByShopId(Long shopId);
 	List<Stock> findByShop(Shop shop);
+	Optional<Stock> findByGlass_IdAndShop_Id(Long glassId, Long shopId);
+	
+
+	    List<Stock> findTop3ByShopOrderByUpdatedAtDesc(Shop shop);
+
+	
 
 
 }

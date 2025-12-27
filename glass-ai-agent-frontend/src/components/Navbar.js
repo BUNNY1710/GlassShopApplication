@@ -1,20 +1,18 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import ProfileMenu from "./ProfileMenu";
 
 function Navbar() {
   const navigate = useNavigate();
-  const role = localStorage.getItem("role")
-
-  const logout = () => {
-    localStorage.clear();
-    window.location.href = "/login";
-  };
+  const role = localStorage.getItem("role");
 
   return (
     <nav style={navBar}>
+      {/* LEFT */}
       <div style={logo} onClick={() => navigate("/dashboard")}>
         🧱 Glass Shop
       </div>
 
+      {/* CENTER MENU */}
       <div style={menu}>
         <NavLink to="/dashboard" style={link}>Dashboard</NavLink>
         <NavLink to="/manage-stock" style={link}>Manage Stock</NavLink>
@@ -29,42 +27,53 @@ function Navbar() {
         )}
       </div>
 
-      <button style={logoutBtn} onClick={logout}>Logout</button>
+      {/* RIGHT PROFILE */}
+      <div style={profileWrapper}>
+        <ProfileMenu />
+      </div>
     </nav>
   );
 }
 
 export default Navbar;
 
+/* ================= STYLES ================= */
+
 const navBar = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  height: "64px",
+  zIndex: 10000,   // 🔥 ABOVE PageWrapper
   display: "flex",
   justifyContent: "space-between",
-  padding: "14px 30px",
-  background: "rgba(0,0,0,0.75)",
-  position: "sticky",
-  top: 0,
+  alignItems: "center",
+  padding: "0 30px",
+  background: "rgba(0,0,0,0.85)",
+  backdropFilter: "blur(10px)",
 };
 
+
 const logo = {
-  color: "white",
-  fontWeight: "700",
+  color: "#f9fafb",
+  fontWeight: "800",
+  fontSize: "18px",
   cursor: "pointer",
 };
 
 const menu = {
   display: "flex",
-  gap: "20px",
+  gap: "22px",
 };
 
 const link = {
   color: "#d1d5db",
   textDecoration: "none",
+  fontSize: "14px",
 };
 
-const logoutBtn = {
-  background: "#dc2626",
-  border: "none",
-  color: "white",
-  padding: "8px 14px",
-  cursor: "pointer",
+const profileWrapper = {
+  display: "flex",
+  alignItems: "center",
 };

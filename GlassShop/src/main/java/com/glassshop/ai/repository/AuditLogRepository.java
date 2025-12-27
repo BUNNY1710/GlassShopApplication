@@ -12,5 +12,9 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
 	List<AuditLog> findTop10ByShopIdOrderByTimestampDesc(Long shopId);
 
 	List<AuditLog> findByShop(Shop shop);
+	
+	List<AuditLog> findTop3ByShopIdOrderByTimestampDesc(Long shopId);
+	
+	List<AuditLog> findTop3ByShopOrderByTimestampDesc(Shop shop);
 
 }

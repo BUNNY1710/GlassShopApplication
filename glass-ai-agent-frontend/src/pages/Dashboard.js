@@ -8,10 +8,10 @@ function Dashboard() {
   const [auditLogs, setAuditLogs] = useState([]);
 
   useEffect(() => {
-    if (role !== "ADMIN") return;
+    if (role !== "ROLE_ADMIN") return;
 
     api
-      .get("/audit/recent")
+      .get("/stock/recent")
       .then((res) => {
         setAuditLogs(res.data.slice(0, 3));
       })
@@ -37,7 +37,7 @@ function Dashboard() {
           </div>
 
           {/* 🔐 ADMIN ONLY */}
-          {role === "ADMIN" && (
+          {role === "ROLE_ADMIN" && (
             <div style={auditCard}>
               <div style={auditHeader}>
                 <h3 style={{ margin: 0 }}>🧾 Recent Stock Activity</h3>

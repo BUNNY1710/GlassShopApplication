@@ -5,8 +5,19 @@ public class RegisterShopRequest {
     private String shopName;
     private String username;
     private String password;
+    
+    private String email;
 
-    public String getShopName() {
+    
+    public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getShopName() {
         return shopName;
     }
 

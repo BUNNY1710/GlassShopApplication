@@ -6,29 +6,26 @@ function PageWrapper({ background, children }) {
         backgroundImage: `url(${background})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
         position: "relative",
       }}
     >
-      {/* Dark overlay */}
+      {/* Overlay */}
       <div
         style={{
           position: "absolute",
           inset: 0,
           background: "rgba(0,0,0,0.6)",
+          zIndex: 0,
         }}
       />
 
-      {/* Page content */}
+      {/* Content */}
       <div
         style={{
           position: "relative",
           zIndex: 1,
-          minHeight: "calc(100vh - 60px)", // navbar safe
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "20px",
+          minHeight: "calc(100vh - 64px)",
+          padding: "40px",
           color: "white",
         }}
       >

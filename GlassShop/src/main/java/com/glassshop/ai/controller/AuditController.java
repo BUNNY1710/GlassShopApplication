@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,22 +26,17 @@ public class AuditController {
     private UserRepository userRepository;
 
     @GetMapping("/recent")
-    public List<AuditLog> recentLogs(Authentication authentication) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<AuditLog> recentLogs() {
 
-        // ✅ Get logged-in admin
-        User admin = userRepository
-                .findByUserName(authentication.getName())
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User admin = userRepository.findByUserName(auth.getName())
                 .orElseThrow();
 
-        // ✅ Ensure shop exists
-        if (admin.getShop() == null) {
-            throw new RuntimeException("Admin has no shop assigned");
-        }
+        Long shopId = admin.getShop().getId();
 
-        // ✅ FETCH ONLY THIS SHOP'S LOGS
-        return auditLogRepository
-                .findTop10ByShopIdOrderByTimestampDesc(
-                        admin.getShop().getId()
-                );
+        return auditLogRepository.findTop3ByShopIdOrderByTimestampDesc(shopId);
     }
+
 }

@@ -18,6 +18,7 @@ public class Shop {
     private String ownerName;
     private String email;
     private LocalDateTime createdAt;
+    
 	public Long getId() {
 		return id;
 	}

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.glassshop.ai.dto.StockActivityDto;
 import com.glassshop.ai.dto.StockUpdateRequest;
 import com.glassshop.ai.entity.Stock;
 import com.glassshop.ai.service.AiExplanationService;
@@ -63,6 +64,12 @@ public class StockController {
 	    @PostMapping("/undo")
 	    public String undoLastAction() {
 	        return stockService.undoLastAction();
+	    }
+
+	 // StockController.java
+	    @GetMapping("/recent")
+	    public List<StockActivityDto> recentStockActivity() {
+	        return stockService.getRecentStockActivity(3);
 	    }
 
 

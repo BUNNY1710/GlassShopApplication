@@ -33,8 +33,8 @@ function Login() {
       }
 
       // ✅ STORE EXACT VALUES (DO NOT MODIFY ROLE)
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role);
 
       // 🔍 Debug (remove later)
       console.log("Logged in as:", role);

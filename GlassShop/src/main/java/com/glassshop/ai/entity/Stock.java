@@ -1,6 +1,10 @@
 package com.glassshop.ai.entity;
 
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,8 +38,18 @@ public class Stock {
     @JoinColumn(name = "shop_id")
     private Shop shop;
     
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+    
+    
     
 
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 	public Shop getShop() {
 		return shop;
 	}

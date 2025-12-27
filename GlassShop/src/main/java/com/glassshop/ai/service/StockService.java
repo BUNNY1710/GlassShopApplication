@@ -2,13 +2,16 @@
 package com.glassshop.ai.service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.glassshop.ai.dto.StockActivityDto;
 import com.glassshop.ai.dto.StockUpdateRequest;
 import com.glassshop.ai.entity.AuditLog;
 import com.glassshop.ai.entity.Glass;
@@ -130,14 +133,21 @@ public class StockService {
 
         /* ---------- LOW STOCK EMAIL ---------- */
         if (stock.getQuantity() < stock.getMinQuantity()) {
+
             try {
                 emailService.sendLowStockAlert(
-                        "LOW STOCK ALERT\n\nGlass: " + glass.getType() +
-                        "\nStand: " + stock.getStandNo() +
-                        "\nQty: " + stock.getQuantity()
+                    shop.getEmail(),   // ✅ SHOP ADMIN EMAIL
+                    "LOW STOCK ALERT 🚨\n\n" +
+                    "Shop: " + shop.getShopName() + "\n" +
+                    "Glass: " + glass.getType() + "\n" +
+                    "Stand: " + stock.getStandNo() + "\n" +
+                    "Quantity Left: " + stock.getQuantity()
                 );
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                System.out.println("Email sending failed: " + e.getMessage());
+            }
         }
+
 
         return "✅ Stock updated successfully";
     }
@@ -271,6 +281,37 @@ public class StockService {
 
         return "✅ Last action undone successfully";
     }
+
+
+    public List<StockActivityDto> getRecentStockActivity(int limit) {
+
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String username = auth.getName();
+
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Shop shop = user.getShop();
+        if (shop == null) {
+            return List.of();
+        }
+
+        return auditLogRepository
+                .findTop3ByShopOrderByTimestampDesc(shop)
+                .stream()
+                .map(log -> new StockActivityDto(
+                        log.getUsername(),
+                        log.getAction(),
+                        log.getGlassType(),
+                        log.getQuantity(),
+                        log.getStandNo(),
+                        log.getTimestamp()
+                ))
+                .toList();
+    }
+
 
 
 

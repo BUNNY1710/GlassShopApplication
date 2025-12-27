@@ -19,6 +19,12 @@ public class Glass {
     // ✅ STORE UNIT SEPARATELY
     private String unit;       // MM / INCH / FEET
 
+    private String glassType;
+
+    public String getGlassType() {
+        return glassType;
+    }
+
     /* ===== GETTERS & SETTERS ===== */
 
     public Long getId() {

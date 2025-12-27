@@ -1,7 +1,9 @@
 package com.glassshop.ai.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.glassshop.ai.dto.AuthResponse;
+import com.glassshop.ai.dto.ChangePasswordRequest;
 import com.glassshop.ai.dto.CreateStaffRequest;
 import com.glassshop.ai.dto.LoginRequest;
+import com.glassshop.ai.dto.ProfileResponse;
 import com.glassshop.ai.dto.RegisterShopRequest;
+import com.glassshop.ai.dto.StaffResponse;
 import com.glassshop.ai.entity.Shop;
 import com.glassshop.ai.entity.User;
 import com.glassshop.ai.repository.ShopRepository;
@@ -53,6 +58,7 @@ public class AuthController {
 
         Shop shop = new Shop();
         shop.setShopName(request.getShopName());
+        shop.setEmail(request.getEmail());
         shop = shopRepository.save(shop);
 
         User admin = new User();
@@ -162,6 +168,142 @@ public class AuthController {
         );
 
     }
+    
+    
+//    @GetMapping("/profile")
+//    public ResponseEntity<?> getProfile() {
+//
+//        Authentication auth =
+//                SecurityContextHolder.getContext().getAuthentication();
+//
+//        User user =
+//                userRepository.findByUserName(auth.getName())
+//                        .orElseThrow();
+//
+//        String shopName =
+//                user.getShop() != null ? user.getShop().getShopName() : "N/A";
+//
+//        return ResponseEntity.ok(
+//                new ProfileResponse(
+//                        user.getUserName(),
+//                        user.getRole(),
+//                        shopName
+//                )
+//        );
+//    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> profile(Authentication authentication) {
+
+        if (authentication == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        String username = authentication.getName();
+
+        Optional<User> optionalUser = userRepository.findByUserName(username);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity
+                    .status(404)
+                    .body("User not found: " + username);
+        }
+
+        User user = optionalUser.get();
+
+        return ResponseEntity.ok(
+            Map.of(
+                "username", user.getUserName(),
+                "role", user.getRole(),
+                "shopId", user.getShop() != null ? user.getShop().getId() : null,
+                "shopName", user.getShop() != null ? user.getShop().getShopName() : null
+            )
+        );
+    }
 
 
+
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordRequest request) {
+
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user =
+                userRepository.findByUserName(auth.getName())
+                        .orElseThrow();
+
+        if (!passwordEncoder.matches(
+                request.getOldPassword(),
+                user.getPassword())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Old password is incorrect");
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Password changed successfully");
+    }
+    
+    @GetMapping("/staff")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<User> getStaff() {
+
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User admin =
+                userRepository.findByUserName(auth.getName())
+                        .orElseThrow();
+
+        Long shopId = admin.getShop().getId();
+
+        System.out.println("ADMIN SHOP ID = " + shopId);
+
+        List<User> staff =
+                userRepository.findByShopIdAndRole(
+                        shopId,
+                        "ROLE_STAFF"
+                );
+
+        System.out.println("STAFF FOUND = " + staff.size());
+
+        return staff;
+    }
+
+
+    
+    @DeleteMapping("/staff/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> removeStaff(@PathVariable Long id) {
+
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User admin =
+                userRepository.findByUserName(auth.getName())
+                        .orElseThrow();
+
+        User staff =
+                userRepository.findById(id)
+                        .orElseThrow();
+
+        // 🔐 SECURITY: same shop only
+        if (!staff.getShop().getId().equals(admin.getShop().getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Not allowed");
+        }
+
+        userRepository.delete(staff);
+        return ResponseEntity.ok("Staff removed");
+    }
+
+    
 }

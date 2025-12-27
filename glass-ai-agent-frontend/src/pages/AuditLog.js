@@ -24,38 +24,44 @@ function AuditLogs() {
 
         <table style={tableStyle}>
           <thead>
-            <tr>
-              <th>User</th>
-              <th>Role</th>
-              <th>Action</th>
-              <th>Glass</th>
-              <th>Qty</th>
-              <th>Stand</th>
-              <th>Time</th>
-            </tr>
-          </thead>
+  <tr>
+    <th>User</th>
+    <th>Role</th>
+    <th>Action</th>
+    <th>Glass</th>
+
+    {/* ✅ NEW COLUMNS */}
+    <th>Height</th>
+    <th>Width</th>
+
+    <th>Qty</th>
+    <th>Stand</th>
+    <th>Time</th>
+  </tr>
+</thead>
+
 
           <tbody>
-            {
-            logs.length === 0 ? (
-            <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>
-                No activity found
-              </td>
-            </tr>
-          ) : (logs.map((l, i) => (
-              <tr key={i}>
-                <td>{l.username}</td>
-                <td>{l.role}</td>
-                <td>{l.action}</td>
-                <td>{l.glassType}</td>
-                <td>{l.quantity}</td>
-                <td>{l.standNo}</td>
-                <td>{new Date(l.timestamp).toLocaleString()}</td>
-              </tr>
-            ))
-            )}
-          </tbody>
+  {logs.map((log, i) => (
+    <tr key={i}>
+      <td>{log.username}</td>
+      <td>{log.role}</td>
+      <td>{log.action}</td>
+      <td>{log.glassType}</td>
+
+      {/* ✅ HEIGHT */}
+      <td>{log.height}{log.unit}</td>
+
+      {/* ✅ WIDTH */}
+      <td>{log.width}{log.unit}</td>
+
+      <td>{log.quantity}</td>
+      <td>{log.standNo}</td>
+      <td>{new Date(log.timestamp).toLocaleString()}</td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
     </PageWrapper>

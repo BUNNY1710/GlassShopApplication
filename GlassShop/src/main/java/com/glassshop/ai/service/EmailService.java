@@ -8,14 +8,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-	@Autowired
+    @Autowired
     private JavaMailSender mailSender;
 
-    public void sendLowStockAlert(String message) {
+    /**
+     * Send low stock alert to shop admin email
+     */
+    public void sendLowStockAlert(String toEmail, String message) {
+
         SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo("owner@gmail.com");
-        mail.setSubject("🚨 LOW STOCK ALERT");
+        mail.setTo(toEmail);
+        mail.setSubject("⚠ Glass Shop - Low Stock Alert");
         mail.setText(message);
+
         mailSender.send(mail);
     }
 }
