@@ -17,7 +17,7 @@ import jakarta.persistence.UniqueConstraint;
 @Entity
 @Table(
 		uniqueConstraints = {
-				@UniqueConstraint(columnNames = {"glass_id", "stand_no"})
+				@UniqueConstraint(columnNames = {"glass_id", "stand_no", "shop_id", "height", "width"})
 		}
 	)
 public class Stock {
@@ -41,9 +41,26 @@ public class Stock {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     
+    private String height;
+    private String width;
+    
+    
+    
     
     
 
+	public String getHeight() {
+		return height;
+	}
+	public void setHeight(String height) {
+		this.height = height;
+	}
+	public String getWidth() {
+		return width;
+	}
+	public void setWidth(String width) {
+		this.width = width;
+	}
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}

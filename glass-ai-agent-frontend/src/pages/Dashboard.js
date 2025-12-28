@@ -3,6 +3,7 @@ import PageWrapper from "../components/PageWrapper";
 import dashboardBg from "../assets/dashboard-bg.jpg";
 import api from "../api/api";
 
+
 function Dashboard() {
   const role = localStorage.getItem("role");
   const [auditLogs, setAuditLogs] = useState([]);

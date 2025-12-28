@@ -22,7 +22,7 @@ public class User {
     @Column(nullable = false)
     private String role;
     
-    
+    private String whatsappNumber;
     
 	public Shop getShop() {
 		return shop;
@@ -53,6 +53,14 @@ public class User {
 	}
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getWhatsappNumber() {
+		return whatsappNumber;
+	}
+
+	public void setWhatsappNumber(String whatsappNumber) {
+		this.whatsappNumber = whatsappNumber;
 	}
 
     

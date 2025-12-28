@@ -2,6 +2,7 @@ package com.glassshop.ai.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,8 @@ public class AuditLog {
     private Long id;
 
     private String username;
+    
+    @Column(nullable = false)
     private String role;
 
     private String action;        // ADD / REMOVE
@@ -26,24 +29,52 @@ public class AuditLog {
     private int standNo;
 
     // ✅ NEW FIELDS
-    private int height;
-    private int width;
+    private String height;
+    private String width;
     private String unit;
+    
+    // Price per unit (optional, for tracking actual sale price)
+    private Double price;
     
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
     private LocalDateTime timestamp;
+    
+    @Column(name = "from_stand")
+    private Integer fromStand;
+
+    @Column(name = "to_stand")
+    private Integer toStand;
+
+
 
     /* ================= GETTERS & SETTERS ================= */
 
+    
     
     public Long getId() {
         return id;
     }
 
-    public Shop getShop() {
+    public Integer getFromStand() {
+		return fromStand;
+	}
+
+	public void setFromStand(Integer fromStand) {
+		this.fromStand = fromStand;
+	}
+
+	public Integer getToStand() {
+		return toStand;
+	}
+
+	public void setToStand(Integer toStand) {
+		this.toStand = toStand;
+	}
+
+	public Shop getShop() {
 		return shop;
 	}
 
@@ -103,19 +134,19 @@ public class AuditLog {
         this.standNo = standNo;
     }
 
-    public int getHeight() {
+    public String getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(String height) {
         this.height = height;
     }
 
-    public int getWidth() {
+    public String getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(String width) {
         this.width = width;
     }
 
@@ -133,5 +164,13 @@ public class AuditLog {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

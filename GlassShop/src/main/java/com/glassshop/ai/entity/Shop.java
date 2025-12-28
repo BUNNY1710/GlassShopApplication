@@ -17,6 +17,7 @@ public class Shop {
     private String shopName;
     private String ownerName;
     private String email;
+    private String whatsappNumber;
     private LocalDateTime createdAt;
     
 	public Long getId() {
@@ -43,6 +44,15 @@ public class Shop {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String getWhatsappNumber() {
+		return whatsappNumber;
+	}
+
+	public void setWhatsappNumber(String whatsappNumber) {
+		this.whatsappNumber = whatsappNumber;
+	}
+	
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}

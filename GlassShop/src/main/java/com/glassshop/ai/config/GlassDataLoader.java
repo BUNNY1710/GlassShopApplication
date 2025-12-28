@@ -19,20 +19,17 @@ public class GlassDataLoader {
                 Glass g5 = new Glass();
                 g5.setType("5MM");
                 g5.setThickness(5);
-                g5.setHeight(2134); // 7 ft → mm
-                g5.setWidth(914);   // 3 ft → mm
+                g5.setUnit("FEET");
 
                 Glass g8 = new Glass();
                 g8.setType("8MM");
                 g8.setThickness(8);
-                g8.setHeight(2134);
-                g8.setWidth(914);
+                g8.setUnit("FEET");
 
                 Glass g10 = new Glass();
                 g10.setType("10MM");
                 g10.setThickness(10);
-                g10.setHeight(2134);
-                g10.setWidth(914);
+                g10.setUnit("FEET");
 
                 repo.save(g5);
                 repo.save(g8);

@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import StockTransfer from "./pages/StockTransfer";
+
 
 import Dashboard from "./pages/Dashboard";
 import StockManager from "./pages/StockManager";
@@ -64,6 +66,8 @@ function App() {
           path="/audit"
           element={<RequireAdmin><AuditLog /></RequireAdmin>}
         />
+
+        <Route path="/stock-transfer" element={<StockTransfer />} />
 
         <Route
           path="/ai"

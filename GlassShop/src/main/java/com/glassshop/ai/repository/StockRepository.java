@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.glassshop.ai.entity.Glass;
 import com.glassshop.ai.entity.Shop;
 import com.glassshop.ai.entity.Stock;
 
@@ -37,6 +38,21 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 	
 
 	    List<Stock> findTop3ByShopOrderByUpdatedAtDesc(Shop shop);
+	    Optional<Stock> findByGlassAndStandNoAndShop(
+	    	    Glass glass,
+	    	    int standNo,
+	    	    Shop shop
+	    	);
+	    Optional<Stock> findByGlassAndHeightAndWidthAndStandNoAndShop(
+	    	    Glass glass,
+	    	    String height,
+	    	    String width,
+	    	    int standNo,
+	    	    Shop shop
+	    	);
+	   
+
+
 
 	
 

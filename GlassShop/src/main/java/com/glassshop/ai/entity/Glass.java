@@ -9,21 +9,15 @@ public class Glass {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String type;       // 5MM, 8MM, manual
+    private String type;          // 5MM, 8MM, 10MM
     private int thickness;
 
-    // ✅ STORE EXACT NUMBER USER ENTERS
-    private Integer height;
-    private Integer width;
+    // ✅ STORE EXACT USER INPUT (26 1/4, 18 3/8, etc.)
+//    private String height;
+//    private String width;
 
-    // ✅ STORE UNIT SEPARATELY
-    private String unit;       // MM / INCH / FEET
-
-    private String glassType;
-
-    public String getGlassType() {
-        return glassType;
-    }
+    // ✅ UNIT: MM / INCH / FEET
+    private String unit;
 
     /* ===== GETTERS & SETTERS ===== */
 
@@ -51,21 +45,21 @@ public class Glass {
         this.thickness = thickness;
     }
 
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
+//    public String getHeight() {
+//        return height;
+//    }
+//
+//    public void setHeight(String height) {
+//        this.height = height;
+//    }
+//
+//    public String getWidth() {
+//        return width;
+//    }
+//
+//    public void setWidth(String width) {
+//        this.width = width;
+//    }
 
     public String getUnit() {
         return unit;

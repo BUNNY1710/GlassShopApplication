@@ -63,6 +63,9 @@ public class SecurityConfig {
                     "/stock/recent",
                     "/stock/**"
                 ).hasAnyRole("ADMIN", "STAFF")
+//                .requestMatchers("/audit/download").hasAuthority("ROLE_ADMIN")
+//                .requestMatchers("/stock/download").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF")
+
 
                 // ❌ EVERYTHING ELSE BLOCKED
                 .anyRequest().authenticated()
