@@ -1,5 +1,225 @@
 
 
+// import { useEffect, useState, useMemo } from "react";
+// import { toast } from "react-toastify";
+// import api from "../api/api";
+// import PageWrapper from "../components/PageWrapper";
+// import stockBg from "../assets/stock-bg.jpg";
+
+// function StockDashboard() {
+//   const [allStock, setAllStock] = useState([]);
+
+//   const [filterGlassType, setFilterGlassType] = useState("");
+//   const [filterHeight, setFilterHeight] = useState("");
+//   const [filterWidth, setFilterWidth] = useState("");
+
+//   /* ================= LOAD STOCK ================= */
+//   const loadStock = async () => {
+//     try {
+//       const res = await api.get("/stock/all");
+//       setAllStock(res.data);
+
+//       res.data.forEach(item => {
+//         if (item.quantity < item.minQuantity) {
+//           toast.error(
+//             `🚨 LOW STOCK: ${item.glass?.type} (Stand ${item.standNo})`,
+//             { toastId: `${item.standNo}-${item.glass?.type}` }
+//           );
+//         }
+//       });
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+
+//   useEffect(() => {
+//     loadStock();
+//   }, []);
+
+//   /* ================= LIVE FILTERING ================= */
+//   const filteredStock = useMemo(() => {
+//   const h = Number(filterHeight);
+//   const w = Number(filterWidth);
+
+//   return allStock.filter(s => {
+//     const matchGlass =
+//       !filterGlassType ||
+//       s.glass?.type?.toLowerCase().includes(filterGlassType.toLowerCase());
+
+//     const matchHeight =
+//       !filterHeight ||
+//       (Number(s.height) >= h && Number(s.height) <= h + 3);
+
+//     const matchWidth =
+//       !filterWidth ||
+//       (Number(s.width) >= w && Number(s.width) <= w + 3);
+
+//     return matchGlass && matchHeight && matchWidth;
+//   });
+// }, [allStock, filterGlassType, filterHeight, filterWidth]);
+
+//   <button
+//   style={downloadBtn}
+//   onClick={() =>
+//     window.open("http://localhost:8080/stock/download", "_blank")
+//   }
+// >
+//   ⬇ Download Stock Report
+// </button>
+
+
+//   /* ================= UI ================= */
+//   return (
+//     <PageWrapper background={stockBg}>
+//       <div style={tableCard}>
+//         <h2 style={{ textAlign: "center", marginBottom: "15px" }}>
+//           📦 View Stock
+//         </h2>
+
+//         {/* 🔍 SEARCH BAR */}
+//         <div style={filterBar}>
+//           <input
+//             type="text"
+//             placeholder="Glass Type (5MM)"
+//             value={filterGlassType}
+//             onChange={e => setFilterGlassType(e.target.value)}
+//           />
+
+//           <input
+//             type="number"
+//             placeholder="Height (5 → 8)"
+//             value={filterHeight}
+//             onChange={e => setFilterHeight(e.target.value)}
+//           />
+
+//           <input
+//             type="number"
+//             placeholder="Width (5 → 8)"
+//             value={filterWidth}
+//             onChange={e => setFilterWidth(e.target.value)}
+//           />
+
+//           <button
+//             onClick={() => {
+//               setFilterGlassType("");
+//               setFilterHeight("");
+//               setFilterWidth("");
+//             }}
+//           >
+//             Clear
+//           </button>
+//         </div>
+
+//         {/* 📊 TABLE */}
+//         <table style={tableStyle}>
+//           <thead>
+//             <tr>
+//               <th>Stand</th>
+//               <th>Glass</th>
+//               <th>Thickness</th>
+//               <th>Height</th>
+//               <th>Width</th>
+//               <th>Qty</th>
+//               <th>Status</th>
+//             </tr>
+//           </thead>
+
+//           <tbody>
+//             {filteredStock.length === 0 ? (
+//               <tr>
+//                 <td colSpan="7">No stock found</td>
+//               </tr>
+//             ) : (
+//               filteredStock.map((s, i) => {
+//                 const isLow = s.quantity < s.minQuantity;
+
+//                 return (
+//                   <tr
+//                     key={i}
+//                     style={{
+//                       backgroundColor: isLow
+//                         ? "rgba(255, 0, 0, 0.25)"
+//                         : "transparent",
+//                       color: isLow ? "#ff4d4d" : "white",
+//                       animation: isLow ? "blink 1s infinite" : "none",
+//                       fontWeight: isLow ? "bold" : "normal"
+//                     }}
+//                   >
+//                     <td>{s.standNo}</td>
+//                     <td>{s.glass?.type}</td>
+//                     <td>{s.glass?.thickness} mm</td>
+
+//                     <td>
+//   {s.height}{" "}
+//   {s.glass?.unit === "FEET" && "ft"}
+//   {s.glass?.unit === "INCH" && "in"}
+//   {s.glass?.unit === "MM" && "mm"}
+// </td>
+
+// <td>
+//   {s.width}{" "}
+//   {s.glass?.unit === "FEET" && "ft"}
+//   {s.glass?.unit === "INCH" && "in"}
+//   {s.glass?.unit === "MM" && "mm"}
+// </td>
+
+
+//                     <td>{s.quantity}</td>
+
+//                     <td>
+//                       {isLow ? "🔴 LOW" : "✅ OK"}
+//                     </td>
+//                   </tr>
+//                 );
+//               })
+//             )}
+//           </tbody>
+//         </table>
+//       </div>
+//     </PageWrapper>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const downloadBtn = {
+//   padding: "10px 18px",
+//   marginBottom: "15px",
+//   borderRadius: "10px",
+//   background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+//   color: "white",
+//   fontWeight: "600",
+//   border: "none",
+//   cursor: "pointer",
+// };
+
+
+// const tableCard = {
+//   width: "90%",
+//   margin: "auto",
+//   padding: "20px",
+//   background: "rgba(0,0,0,0.6)",
+//   borderRadius: "12px",
+// };
+
+// const filterBar = {
+//   display: "flex",
+//   gap: "8px",
+//   marginBottom: "15px",
+//   justifyContent: "center",
+//   flexWrap: "wrap",
+// };
+
+// const tableStyle = {
+//   width: "100%",
+//   color: "white",
+//   textAlign: "center",
+//   borderCollapse: "collapse",
+// };
+
+// export default StockDashboard;
+
+
 import { useEffect, useState, useMemo } from "react";
 import { toast } from "react-toastify";
 import api from "../api/api";
@@ -36,56 +256,44 @@ function StockDashboard() {
     loadStock();
   }, []);
 
-  /* ================= LIVE FILTERING ================= */
+  /* ================= FILTER ================= */
   const filteredStock = useMemo(() => {
-  const h = Number(filterHeight);
-  const w = Number(filterWidth);
+    const h = Number(filterHeight);
+    const w = Number(filterWidth);
 
-  return allStock.filter(s => {
-    const matchGlass =
-      !filterGlassType ||
-      s.glass?.type?.toLowerCase().includes(filterGlassType.toLowerCase());
+    return allStock.filter(s => {
+      const matchGlass =
+        !filterGlassType ||
+        s.glass?.type?.toLowerCase().includes(filterGlassType.toLowerCase());
 
-    const matchHeight =
-      !filterHeight ||
-      (Number(s.height) >= h && Number(s.height) <= h + 3);
+      const matchHeight =
+        !filterHeight ||
+        (Number(s.height) >= h && Number(s.height) <= h + 3);
 
-    const matchWidth =
-      !filterWidth ||
-      (Number(s.width) >= w && Number(s.width) <= w + 3);
+      const matchWidth =
+        !filterWidth ||
+        (Number(s.width) >= w && Number(s.width) <= w + 3);
 
-    return matchGlass && matchHeight && matchWidth;
-  });
-}, [allStock, filterGlassType, filterHeight, filterWidth]);
+      return matchGlass && matchHeight && matchWidth;
+    });
+  }, [allStock, filterGlassType, filterHeight, filterWidth]);
 
-  <button
-  style={downloadBtn}
-  onClick={() =>
-    window.open("http://localhost:8080/stock/download", "_blank")
-  }
->
-  ⬇ Download Stock Report
-</button>
-
-
-  /* ================= UI ================= */
   return (
     <PageWrapper background={stockBg}>
-      <div style={tableCard}>
-        <h2 style={{ textAlign: "center", marginBottom: "15px" }}>
-          📦 View Stock
-        </h2>
+      <div style={card}>
+        <h2 style={title}>📦 View Stock</h2>
 
-        {/* 🔍 SEARCH BAR */}
-        <div style={filterBar}>
+        {/* 🔍 FILTERS */}
+        <div style={filters}>
           <input
-            type="text"
+            style={input}
             placeholder="Glass Type (5MM)"
             value={filterGlassType}
             onChange={e => setFilterGlassType(e.target.value)}
           />
 
           <input
+            style={input}
             type="number"
             placeholder="Height (5 → 8)"
             value={filterHeight}
@@ -93,6 +301,7 @@ function StockDashboard() {
           />
 
           <input
+            style={input}
             type="number"
             placeholder="Width (5 → 8)"
             value={filterWidth}
@@ -100,6 +309,7 @@ function StockDashboard() {
           />
 
           <button
+            style={clearBtn}
             onClick={() => {
               setFilterGlassType("");
               setFilterHeight("");
@@ -110,111 +320,127 @@ function StockDashboard() {
           </button>
         </div>
 
-        {/* 📊 TABLE */}
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th>Stand</th>
-              <th>Glass</th>
-              <th>Thickness</th>
-              <th>Height</th>
-              <th>Width</th>
-              <th>Qty</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredStock.length === 0 ? (
+        {/* 📊 TABLE (SCROLLABLE) */}
+        <div style={tableWrapper}>
+          <table style={table}>
+            <thead>
               <tr>
-                <td colSpan="7">No stock found</td>
+                <th>Stand</th>
+                <th>Glass</th>
+                <th>Thickness</th>
+                <th>Height</th>
+                <th>Width</th>
+                <th>Qty</th>
+                <th>Status</th>
               </tr>
-            ) : (
-              filteredStock.map((s, i) => {
-                const isLow = s.quantity < s.minQuantity;
+            </thead>
 
-                return (
-                  <tr
-                    key={i}
-                    style={{
-                      backgroundColor: isLow
-                        ? "rgba(255, 0, 0, 0.25)"
-                        : "transparent",
-                      color: isLow ? "#ff4d4d" : "white",
-                      animation: isLow ? "blink 1s infinite" : "none",
-                      fontWeight: isLow ? "bold" : "normal"
-                    }}
-                  >
-                    <td>{s.standNo}</td>
-                    <td>{s.glass?.type}</td>
-                    <td>{s.glass?.thickness} mm</td>
+            <tbody>
+              {filteredStock.length === 0 ? (
+                <tr>
+                  <td colSpan="7">No stock found</td>
+                </tr>
+              ) : (
+                filteredStock.map((s, i) => {
+                  const isLow = s.quantity < s.minQuantity;
 
-                    <td>
-  {s.height}{" "}
-  {s.glass?.unit === "FEET" && "ft"}
-  {s.glass?.unit === "INCH" && "in"}
-  {s.glass?.unit === "MM" && "mm"}
-</td>
+                  return (
+                    <tr
+                      key={i}
+                      style={{
+                        background: isLow
+                          ? "rgba(255,0,0,0.25)"
+                          : "transparent",
+                        color: isLow ? "#ff4d4d" : "white",
+                        animation: isLow ? "blink 1s infinite" : "none",
+                        fontWeight: isLow ? "600" : "400",
+                      }}
+                    >
+                      <td>{s.standNo}</td>
+                      <td>{s.glass?.type}</td>
+                      <td>{s.glass?.thickness} mm</td>
 
-<td>
-  {s.width}{" "}
-  {s.glass?.unit === "FEET" && "ft"}
-  {s.glass?.unit === "INCH" && "in"}
-  {s.glass?.unit === "MM" && "mm"}
-</td>
+                      <td>
+                        {s.height}{" "}
+                        {s.glass?.unit === "FEET" && "ft"}
+                        {s.glass?.unit === "INCH" && "in"}
+                        {s.glass?.unit === "MM" && "mm"}
+                      </td>
 
+                      <td>
+                        {s.width}{" "}
+                        {s.glass?.unit === "FEET" && "ft"}
+                        {s.glass?.unit === "INCH" && "in"}
+                        {s.glass?.unit === "MM" && "mm"}
+                      </td>
 
-                    <td>{s.quantity}</td>
-
-                    <td>
-                      {isLow ? "🔴 LOW" : "✅ OK"}
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+                      <td>{s.quantity}</td>
+                      <td>{isLow ? "🔴 LOW" : "✅ OK"}</td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </PageWrapper>
   );
 }
 
+export default StockDashboard;
+
 /* ================= STYLES ================= */
 
-const downloadBtn = {
-  padding: "10px 18px",
+const card = {
+  width: "100%",
+  maxWidth: "1100px",
+  margin: "auto",
+  padding: "16px",
+  background: "rgba(0,0,0,0.6)",
+  borderRadius: "16px",
+};
+
+const title = {
+  textAlign: "center",
   marginBottom: "15px",
-  borderRadius: "10px",
-  background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+};
+
+const filters = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+  gap: "10px",
+  marginBottom: "15px",
+};
+
+const input = {
+  padding: "10px",
+  borderRadius: "8px",
+  border: "1px solid rgba(255,255,255,0.2)",
+  background: "rgba(255,255,255,0.1)",
   color: "white",
-  fontWeight: "600",
+  outline: "none",
+};
+
+const clearBtn = {
+  padding: "10px",
+  borderRadius: "8px",
   border: "none",
+  background: "#374151",
+  color: "white",
   cursor: "pointer",
 };
 
-
-const tableCard = {
-  width: "90%",
-  margin: "auto",
-  padding: "20px",
-  background: "rgba(0,0,0,0.6)",
-  borderRadius: "12px",
-};
-
-const filterBar = {
-  display: "flex",
-  gap: "8px",
-  marginBottom: "15px",
-  justifyContent: "center",
-  flexWrap: "wrap",
-};
-
-const tableStyle = {
+const tableWrapper = {
   width: "100%",
-  color: "white",
-  textAlign: "center",
-  borderCollapse: "collapse",
+  overflowX: "auto",
 };
 
-export default StockDashboard;
+const table = {
+  width: "100%",
+  minWidth: "720px", // 👈 keeps columns readable on mobile
+  borderCollapse: "collapse",
+  textAlign: "center",
+  color: "white",
+};
+

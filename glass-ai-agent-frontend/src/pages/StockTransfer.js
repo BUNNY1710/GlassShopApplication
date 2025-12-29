@@ -373,15 +373,27 @@ const page = {
   alignItems: "center",
 };
 
+// const card = {
+//   width: "900px",
+//   padding: "30px",
+//   borderRadius: "18px",
+//   background: "rgba(0,0,0,0.6)",
+//   backdropFilter: "blur(12px)",
+//   boxShadow: "0 20px 40px rgba(0,0,0,0.7)",
+//   color: "white",
+// };
+
 const card = {
-  width: "900px",
-  padding: "30px",
+  width: "100%",
+  maxWidth: "900px",
+  padding: "20px",
   borderRadius: "18px",
   background: "rgba(0,0,0,0.6)",
   backdropFilter: "blur(12px)",
   boxShadow: "0 20px 40px rgba(0,0,0,0.7)",
   color: "white",
 };
+
 
 const title = {
   textAlign: "center",
@@ -396,12 +408,20 @@ const subtitle = {
   marginBottom: "25px",
 };
 
+// const grid = {
+//   display: "grid",
+//   gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+//   gap: "15px",
+//   marginBottom: "15px",
+// };
+
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-  gap: "15px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+  gap: "12px",
   marginBottom: "15px",
 };
+
 
 const field = {
   display: "flex",

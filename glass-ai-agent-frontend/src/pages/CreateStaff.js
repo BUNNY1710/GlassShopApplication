@@ -141,15 +141,27 @@ const page = {
   alignItems: "center",
 };
 
+// const card = {
+//   width: "420px",
+//   padding: "30px",
+//   borderRadius: "18px",
+//   background: "rgba(0,0,0,0.65)",
+//   backdropFilter: "blur(14px)",
+//   boxShadow: "0 25px 60px rgba(0,0,0,0.8)",
+//   color: "white",
+// };
+
 const card = {
-  width: "420px",
-  padding: "30px",
+  width: "100%",
+  maxWidth: "420px",
+  padding: "22px",
   borderRadius: "18px",
   background: "rgba(0,0,0,0.65)",
   backdropFilter: "blur(14px)",
   boxShadow: "0 25px 60px rgba(0,0,0,0.8)",
   color: "white",
 };
+
 
 const title = {
   textAlign: "center",

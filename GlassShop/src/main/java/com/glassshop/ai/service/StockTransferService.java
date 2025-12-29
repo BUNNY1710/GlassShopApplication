@@ -73,10 +73,24 @@ public class StockTransferService {
                         shop
                 )
                 .orElse(null);
-
+        
         if (fromStock == null || fromStock.getQuantity() < request.getQuantity()) {
             return "❌ Not enough stock in source stand";
         }
+//        Stock fromStock = stockRepository
+//        	    .findById(request.getStockId())
+//        	    .orElse(null);
+//
+//        	if (fromStock == null) {
+//        	    return "❌ Source stock not found";
+//        	}
+//
+//        	if (fromStock.getQuantity() < request.getQuantity()) {
+//        	    return "❌ Not enough stock in source stand";
+//        	}
+
+
+        
 
         Stock toStock = stockRepository
                 .findByGlassAndHeightAndWidthAndStandNoAndShop(
@@ -105,14 +119,36 @@ public class StockTransferService {
         stockRepository.save(toStock);
 
         // ✅ AUDIT LOG
+//        AuditLog log = new AuditLog();
+//        log.setUsername(user.getUserName());
+//        log.setRole(user.getRole());
+//        log.setAction("TRANSFER");
+//        log.setGlassType(glass.getType());
+//        log.setQuantity(request.getQuantity());
+//        log.setFromStand(request.getFromStand());
+//        log.setToStand(request.getToStand());
+//        log.setHeight(request.getHeight());
+//        log.setWidth(request.getWidth());
+//        log.setUnit(request.getUnit());
+//        log.setShop(shop);
+//        log.setTimestamp(LocalDateTime.now());
+//
+//        auditLogRepository.save(log);
+        
+     // ✅ AUDIT LOG
         AuditLog log = new AuditLog();
         log.setUsername(user.getUserName());
         log.setRole(user.getRole());
         log.setAction("TRANSFER");
         log.setGlassType(glass.getType());
         log.setQuantity(request.getQuantity());
+
         log.setFromStand(request.getFromStand());
         log.setToStand(request.getToStand());
+
+        // 🔥 IMPORTANT FIX
+        log.setStandNo(request.getToStand());
+
         log.setHeight(request.getHeight());
         log.setWidth(request.getWidth());
         log.setUnit(request.getUnit());
@@ -120,6 +156,7 @@ public class StockTransferService {
         log.setTimestamp(LocalDateTime.now());
 
         auditLogRepository.save(log);
+
 
         return "✅ Stock transferred successfully";
     }
