@@ -5,8 +5,8 @@ public class RegisterShopRequest {
     private String shopName;
     private String username;
     private String password;
+    
     private String email;
-    private String whatsappNumber;
 
     
     public String getEmail() {
@@ -37,15 +37,7 @@ public class RegisterShopRequest {
         return password;
     }
 
-	public void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
-
-	public String getWhatsappNumber() {
-		return whatsappNumber;
-	}
-
-	public void setWhatsappNumber(String whatsappNumber) {
-		this.whatsappNumber = whatsappNumber;
-	}
 }

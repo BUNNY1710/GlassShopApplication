@@ -59,7 +59,6 @@ public class AuthController {
         Shop shop = new Shop();
         shop.setShopName(request.getShopName());
         shop.setEmail(request.getEmail());
-        shop.setWhatsappNumber(request.getWhatsappNumber());
         shop = shopRepository.save(shop);
 
         User admin = new User();
@@ -67,7 +66,6 @@ public class AuthController {
         admin.setPassword(passwordEncoder.encode(request.getPassword()));
         admin.setRole("ROLE_ADMIN");
         admin.setShop(shop);
-        admin.setWhatsappNumber(request.getWhatsappNumber());
 
         userRepository.save(admin);
 

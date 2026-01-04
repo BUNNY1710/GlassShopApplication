@@ -1,23 +1,28 @@
 package com.glassshop.ai.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "glass")
 public class Glass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "type", nullable = false, length = 50)
     private String type;          // 5MM, 8MM, 10MM
+    
+    @Column(name = "thickness", nullable = false)
     private int thickness;
 
-    // ✅ STORE EXACT USER INPUT (26 1/4, 18 3/8, etc.)
-//    private String height;
-//    private String width;
-
-    // ✅ UNIT: MM / INCH / FEET
-    private String unit;
+    @Column(name = "unit", nullable = false, length = 10)
+    private String unit;          // MM / INCH / FEET
 
     /* ===== GETTERS & SETTERS ===== */
 

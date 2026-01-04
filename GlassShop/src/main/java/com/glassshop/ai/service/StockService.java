@@ -2,7 +2,6 @@
 package com.glassshop.ai.service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -538,15 +537,15 @@ public class StockService {
         log.setAction("TRANSFER");
         log.setGlassType(glass.getType());
 
-        // ✅ TRANSFER QUANTITY (NOT remaining)
+        // ✅ SET POSITIVE QUANTITY TO SHOW AMOUNT TRANSFERRED
         log.setQuantity(request.getQuantity());
 
         // ✅ USE fromStand & toStand
         log.setFromStand(request.getFromStand());
         log.setToStand(request.getToStand());
 
-        // Optional: keep standNo unused
-        log.setStandNo(0);
+        // ✅ Set standNo to source stand (where transfer originated)
+        log.setStandNo(request.getFromStand());
 
         log.setHeight(fromStock.getHeight());
         log.setWidth(fromStock.getWidth());

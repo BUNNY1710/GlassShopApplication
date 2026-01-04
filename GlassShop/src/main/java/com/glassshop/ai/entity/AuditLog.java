@@ -2,6 +2,8 @@ package com.glassshop.ai.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,37 +11,51 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "audit_log")
 public class AuditLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username")
     private String username;
     
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false, length = 50)
     private String role;
 
-    private String action;        // ADD / REMOVE
+    @Column(name = "action", length = 20)
+    private String action;        // ADD / REMOVE / TRANSFER
+    
+    @Column(name = "glass_type", length = 50)
     private String glassType;
 
+    @Column(name = "quantity", nullable = false)
     private int quantity;
+    
+    @Column(name = "stand_no")
     private int standNo;
 
-    // ✅ NEW FIELDS
+    @Column(name = "height", length = 100)
     private String height;
+    
+    @Column(name = "width", length = 100)
     private String width;
+    
+    @Column(name = "unit", length = 10)
     private String unit;
     
-    // Price per unit (optional, for tracking actual sale price)
+    @Column(name = "price")
     private Double price;
     
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
+    @Column(name = "timestamp")
     private LocalDateTime timestamp;
     
     @Column(name = "from_stand")

@@ -2,13 +2,17 @@ package com.glassshop.ai.entity;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "installation")
 public class Installation {
 
 	 	@Id
@@ -16,13 +20,20 @@ public class Installation {
 	    private Long id;
 
 	    @ManyToOne
+	    @JoinColumn(name = "glass_id", nullable = false)
 	    private Glass glass;
 
 	    @ManyToOne
+	    @JoinColumn(name = "site_id", nullable = false)
 	    private Site site;
 
+	    @Column(name = "quantity", nullable = false)
 	    private int quantity;
+	    
+	    @Column(name = "install_date")
 	    private LocalDate installDate;
+	    
+	    @Column(name = "status", length = 50)
 	    private String status;
 		public Long getId() {
 			return id;

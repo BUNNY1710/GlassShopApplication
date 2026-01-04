@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +17,7 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
+		name = "stock",
 		uniqueConstraints = {
 				@UniqueConstraint(columnNames = {"glass_id", "stand_no", "shop_id", "height", "width"})
 		}
@@ -27,21 +29,30 @@ public class Stock {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "glass_id")
+    @JoinColumn(name = "glass_id", nullable = false)
     private Glass glass;
 
+    @Column(name = "stand_no", nullable = false)
     private int standNo;
+    
+    @Column(name = "quantity", nullable = false)
     private int quantity;
+    
+    @Column(name = "min_quantity", nullable = false)
     private int minQuantity;
     
     @ManyToOne
-    @JoinColumn(name = "shop_id")
+    @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
     
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "height", length = 100)
     private String height;
+    
+    @Column(name = "width", length = 100)
     private String width;
     
     

@@ -193,3 +193,8 @@ Consider adding:
 - Pricing is calculated automatically if not provided during stock removal
 - Area calculations support mm, inch, and feet units
 
+
+
+
+
+

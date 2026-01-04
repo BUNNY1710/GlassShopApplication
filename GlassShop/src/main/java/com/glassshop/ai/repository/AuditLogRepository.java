@@ -2,6 +2,7 @@ package com.glassshop.ai.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,8 +23,10 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
 	
 	List<AuditLog> findTop3ByShopOrderByTimestampDesc(Shop shop);
 	
-	
-	
+	// Find most recent audit log for specific stock (for updating quantity during transfer)
+	Optional<AuditLog> findTopByShopAndGlassTypeAndStandNoAndHeightAndWidthOrderByTimestampDesc(
+            Shop shop, String glassType, int standNo, String height, String width);
+    
 	List<AuditLog> findByShopAndTimestampBetween(
             Shop shop,
             LocalDateTime start,
