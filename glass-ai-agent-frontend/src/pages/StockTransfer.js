@@ -218,7 +218,22 @@ function StockTransfer() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    
+    // For glass type, allow both "5" and "5MM" formats
+    // We'll auto-append "MM" on blur or submit if it's just a number
+    setForm({ ...form, [name]: value });
+  };
+
+  // Format glass type when field loses focus
+  const handleGlassTypeBlur = () => {
+    if (form.glassType) {
+      // If it's just a number (no letters), append "MM"
+      if (/^\d+$/.test(form.glassType.trim())) {
+        setForm({ ...form, glassType: form.glassType.trim() + "MM" });
+      }
+      // If it already has letters (like "5MM", "8MM"), keep it as is
+    }
   };
 
   // 🔹 OPEN CONFIRM MODAL
@@ -229,8 +244,15 @@ function StockTransfer() {
   // 🔹 ACTUAL API CALL AFTER CONFIRM
   const confirmTransfer = async () => {
     try {
+      // Format glass type: if it's just a number, append "MM"
+      let formattedGlassType = form.glassType?.trim() || "";
+      if (formattedGlassType && /^\d+$/.test(formattedGlassType)) {
+        formattedGlassType = formattedGlassType + "MM";
+      }
+      
       const res = await api.post("/stock/transfer", {
         ...form,
+        glassType: formattedGlassType,
         fromStand: Number(form.fromStand),
         toStand: Number(form.toStand),
         quantity: Number(form.quantity)
@@ -256,9 +278,10 @@ function StockTransfer() {
             <Field label="Glass Type">
               <input
                 name="glassType"
-                placeholder="5MM"
+                placeholder="5 (or 5MM)"
                 value={form.glassType}
                 onChange={handleChange}
+                onBlur={handleGlassTypeBlur}
               />
             </Field>
 
@@ -332,7 +355,7 @@ function StockTransfer() {
             <h3>⚠️ Confirm Stock Transfer</h3>
 
             <div style={summary}>
-              <p><b>Glass:</b> {form.glassType}</p>
+              <p><b>Glass:</b> {form.glassType && /^\d+$/.test(form.glassType.trim()) ? form.glassType.trim() + "MM" : form.glassType}</p>
               <p><b>Unit:</b> {form.unit}</p>
               <p><b>Height:</b> {form.height}</p>
               <p><b>Width:</b> {form.width}</p>

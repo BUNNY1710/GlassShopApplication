@@ -186,21 +186,20 @@ public class StockService {
 
         historyRepository.save(history);
 
-        /* ---------- LOW STOCK EMAIL ---------- */
+        /* ---------- LOW STOCK EMAIL (ASYNC - NON-BLOCKING) ---------- */
         if (stock.getQuantity() < stock.getMinQuantity()) {
-
-            try {
-                emailService.sendLowStockAlert(
-                    shop.getEmail(),   // ✅ SHOP ADMIN EMAIL
-                    "LOW STOCK ALERT 🚨\n\n" +
-                    "Shop: " + shop.getShopName() + "\n" +
-                    "Glass: " + glass.getType() + "\n" +
-                    "Stand: " + stock.getStandNo() + "\n" +
-                    "Quantity Left: " + stock.getQuantity()
-                );
-            } catch (Exception e) {
-                System.out.println("Email sending failed: " + e.getMessage());
-            }
+            // Send email asynchronously - won't block the response
+            emailService.sendLowStockAlert(
+                shop.getEmail(),   // ✅ SHOP ADMIN EMAIL
+                "LOW STOCK ALERT 🚨\n\n" +
+                "Shop: " + shop.getShopName() + "\n" +
+                "Glass: " + glass.getType() + "\n" +
+                "Stand: " + stock.getStandNo() + "\n" +
+                "Height: " + stock.getHeight() + "\n" +
+                "Width: " + stock.getWidth() + "\n" +
+                "Quantity Left: " + stock.getQuantity() + "\n" +
+                "Minimum Required: " + stock.getMinQuantity()
+            );
         }
 
 

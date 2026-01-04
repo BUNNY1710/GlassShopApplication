@@ -21,6 +21,7 @@ import com.glassshop.ai.repository.GlassRepository;
 import com.glassshop.ai.repository.StockHistoryRepository;
 import com.glassshop.ai.repository.StockRepository;
 import com.glassshop.ai.repository.UserRepository;
+import com.glassshop.ai.service.EmailService;
 
 @Service
 public class StockTransferService {
@@ -30,6 +31,7 @@ public class StockTransferService {
     @Autowired private AuditLogRepository auditLogRepository;
     @Autowired private StockHistoryRepository stockHistoryRepository;
     @Autowired private UserRepository userRepository;
+    @Autowired private EmailService emailService;
 
     @Transactional
     public String transferStock(StockTransferRequest request) {
@@ -146,44 +148,11 @@ public class StockTransferService {
             throw new RuntimeException("Stock quantities were not updated correctly during transfer");
         }
 
-        // ✅ UPDATE EXISTING AUDIT LOG - Update the most recent entry for source stand
-        // Find the entry that was created when stock was added to Stand 1 (e.g., ADD with 111)
-        // and update it to show TRANSFER action with new quantity after transfer (e.g., 100)
-        Optional<AuditLog> existingFromLogOpt = auditLogRepository
-                .findTopByShopAndGlassTypeAndStandNoAndHeightAndWidthOrderByTimestampDesc(
-                        shop, glass.getType(), request.getFromStand(), 
-                        request.getHeight(), request.getWidth());
+        // ✅ DO NOT UPDATE SOURCE STAND'S AUDIT LOG
+        // The source stand (fromStand) should keep its original ADD status
+        // Only the destination stand will show TRANSFER status
         
-        if (existingFromLogOpt.isPresent()) {
-            // Update existing entry with new quantity and set action to TRANSFER
-            AuditLog existingFromLog = existingFromLogOpt.get();
-            existingFromLog.setAction("TRANSFER"); // Set action to TRANSFER
-            existingFromLog.setQuantity(newFromQuantity); // Update quantity to NEW REMAINING quantity (e.g., 80)
-            existingFromLog.setStandNo(request.getFromStand()); // Ensure standNo is correct (source stand)
-            existingFromLog.setFromStand(request.getFromStand()); // Set from stand
-            existingFromLog.setToStand(request.getToStand()); // Set to stand
-            existingFromLog.setTimestamp(LocalDateTime.now()); // Update timestamp
-            auditLogRepository.save(existingFromLog);
-        } else {
-            // If no existing entry found for source stand, create new one with updated quantity
-            AuditLog fromLog = new AuditLog();
-            fromLog.setUsername(user.getUserName());
-            fromLog.setRole(user.getRole());
-            fromLog.setAction("TRANSFER");
-            fromLog.setGlassType(glass.getType());
-            fromLog.setQuantity(newFromQuantity); // Set to NEW REMAINING quantity (e.g., 80)
-            fromLog.setStandNo(request.getFromStand()); // Source stand
-            fromLog.setFromStand(request.getFromStand());
-            fromLog.setToStand(request.getToStand());
-            fromLog.setHeight(request.getHeight());
-            fromLog.setWidth(request.getWidth());
-            fromLog.setUnit(request.getUnit());
-            fromLog.setShop(shop);
-            fromLog.setTimestamp(LocalDateTime.now());
-            auditLogRepository.save(fromLog);
-        }
-        
-        // ✅ UPDATE EXISTING AUDIT LOG - Update or create entry for destination stand
+        // ✅ UPDATE EXISTING AUDIT LOG - Update or create entry for destination stand only
         Optional<AuditLog> existingToLogOpt = auditLogRepository
                 .findTopByShopAndGlassTypeAndStandNoAndHeightAndWidthOrderByTimestampDesc(
                         shop, glass.getType(), request.getToStand(), 
@@ -235,6 +204,37 @@ public class StockTransferService {
         toHistory.setAction("ADD");
         toHistory.setShop(shop);
         stockHistoryRepository.save(toHistory);
+
+        // ✅ LOW STOCK EMAIL ALERTS (ASYNC - NON-BLOCKING)
+        // Check if source stand is now low on stock
+        if (savedFromStock.getQuantity() < savedFromStock.getMinQuantity()) {
+            emailService.sendLowStockAlert(
+                shop.getEmail(),
+                "LOW STOCK ALERT 🚨\n\n" +
+                "Shop: " + shop.getShopName() + "\n" +
+                "Glass: " + glass.getType() + "\n" +
+                "Stand: " + savedFromStock.getStandNo() + " (After Transfer)\n" +
+                "Height: " + savedFromStock.getHeight() + "\n" +
+                "Width: " + savedFromStock.getWidth() + "\n" +
+                "Quantity Left: " + savedFromStock.getQuantity() + "\n" +
+                "Minimum Required: " + savedFromStock.getMinQuantity()
+            );
+        }
+        
+        // Check if destination stand is now low on stock
+        if (savedToStock.getQuantity() < savedToStock.getMinQuantity()) {
+            emailService.sendLowStockAlert(
+                shop.getEmail(),
+                "LOW STOCK ALERT 🚨\n\n" +
+                "Shop: " + shop.getShopName() + "\n" +
+                "Glass: " + glass.getType() + "\n" +
+                "Stand: " + savedToStock.getStandNo() + " (After Transfer)\n" +
+                "Height: " + savedToStock.getHeight() + "\n" +
+                "Width: " + savedToStock.getWidth() + "\n" +
+                "Quantity Left: " + savedToStock.getQuantity() + "\n" +
+                "Minimum Required: " + savedToStock.getMinQuantity()
+            );
+        }
 
         return "✅ Stock transferred successfully: " + request.getQuantity() + " units from Stand " + 
                request.getFromStand() + " to Stand " + request.getToStand();

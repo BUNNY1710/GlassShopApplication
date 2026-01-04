@@ -19,4 +19,22 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// 🔄 HANDLE 401 UNAUTHORIZED - REDIRECT TO LOGIN
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear token and role
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      
+      // Redirect to login (only if not already on login page)
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;
